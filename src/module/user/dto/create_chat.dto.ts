@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 
 export class CreateChatDto {
   constructor(parameters: CreateChatDto) {
@@ -7,4 +7,7 @@ export class CreateChatDto {
 
   @IsString()
   user_id: string;
+
+  @IsUUID()
+  request_uuid: string;
 }

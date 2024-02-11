@@ -4,12 +4,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/module/user/user.schema';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
-import { UserAlreadyExistException } from 'src/common/errors/security/user-already-exist';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { JwtContent } from 'src/common/types/jwt-content';
-import { UserNotFoundException } from 'src/common/errors/security/user-not-found';
-import { InvalidPasswordException } from 'src/common/errors/security/invalid-password';
+import { UserNotFoundException } from 'src/common/errors/http/user-not-found';
+import { InvalidPasswordException } from 'src/common/errors/http/invalid-password';
+import { UserAlreadyExistException } from 'src/common/errors/http/user-already-exist';
 
 @Injectable()
 export class AuthService {

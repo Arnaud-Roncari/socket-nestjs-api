@@ -1,14 +1,21 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { IdFromJWT } from 'src/common/decorators/id-from-jwt.decorator';
-import { UserMapper } from './user.mapper';
+import { UserMapper } from './mapper/user.mapper';
 import { UserDto } from './dto/user.dto';
+import { ChatService } from '../chat/chat.service';
+import { ChatDto } from './dto/chat.dto';
+import { ChatMapper } from './mapper/chat.mapper';
+import { CreateChatDto } from './dto/create_chat.dto';
 
 @UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @Get('/all')
   async getAllUsers(@IdFromJWT() userId: string): Promise<UserDto[]> {
@@ -20,5 +27,11 @@ export class UserController {
   async getUser(@IdFromJWT() userId: string) {
     const user = await this.userService.getUser(userId);
     return UserMapper.toUserDto(user);
+  }
+
+  @Get('/chat/all')
+  async getChats(@IdFromJWT() userId: string): Promise<ChatDto[]> {
+    const chats = await this.chatService.getChats(userId);
+    return ChatMapper.toChatsDto(chats);
   }
 }

@@ -2,7 +2,6 @@ import { IsString, MinLength, MaxLength, IsEmail } from 'class-validator';
 
 export class LoginDto {
   @IsString()
-  @IsEmail()
   readonly username: string;
 
   @IsString()

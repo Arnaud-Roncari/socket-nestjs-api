@@ -12,7 +12,8 @@ export class Message {
   @Prop({ type: String })
   text: string;
 
-  @Prop({ type: Date, default: Date.now() })
+  /// Bug: WIll attribute the same date. The one which is when the server started.
+  @Prop({ type: Date, default: new Date() })
   created_at: Date;
 }
 

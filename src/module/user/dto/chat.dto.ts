@@ -6,6 +6,7 @@ export class ChatDto {
     Object.assign(this, parameters);
   }
 
+  chat_id: string;
   users: UserDto[];
   messages: MessageDto[];
 }

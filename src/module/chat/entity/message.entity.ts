@@ -13,7 +13,7 @@ export class MessageEntity {
     }
 
     const message = new MessageEntity({
-      userId: json.user_id,
+      userId: json.user_id.toString(),
       text: json.text,
       createdAt: json.created_at,
     });

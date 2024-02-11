@@ -2,6 +2,7 @@ import { UserEntity } from 'src/module/user/user.entity';
 import { MessageEntity } from './message.entity';
 
 export class ChatEntity {
+  id: string;
   users: UserEntity[];
   messages: MessageEntity[];
 
@@ -15,6 +16,7 @@ export class ChatEntity {
     }
 
     const chat = new ChatEntity({
+      id: json._id.toString(),
       users: UserEntity.fromJsons(json.user_ids),
       messages: MessageEntity.fromJsons(json.messages),
     });

@@ -13,7 +13,7 @@ export class UserEntity {
     }
 
     const user = new UserEntity({
-      id: json._id,
+      id: json._id.toString(),
       username: json.username,
       avatarNumber: json.avatar_number,
     });
