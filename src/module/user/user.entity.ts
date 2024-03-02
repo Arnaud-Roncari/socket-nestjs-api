@@ -2,6 +2,7 @@ export class UserEntity {
   id: string;
   username: string;
   avatarNumber: string;
+  fcmToken: string | null;
 
   constructor(parameters: UserEntity) {
     Object.assign(this, parameters);
@@ -16,6 +17,7 @@ export class UserEntity {
       id: json._id.toString(),
       username: json.username,
       avatarNumber: json.avatar_number,
+      fcmToken: json.fcm_token,
     });
 
     return user;

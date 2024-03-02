@@ -19,7 +19,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto): Promise<string> {
-    const { username, password } = dto;
+    const { username, password, fcm_token } = dto;
     const existingUser = await this.userModel.findOne({ username });
 
     if (!existingUser) {
@@ -29,13 +29,17 @@ export class AuthService {
     if (!match) {
       throw new InvalidPasswordException();
     }
+
+    /// Update fmc_token, for notifications.
+    await this.userModel.findByIdAndUpdate(existingUser.id, { fcm_token });
+
     return await this.jwtService.signAsync({
       id: existingUser._id.toString(),
     } as JwtContent);
   }
 
   async signup(dto: SignupDto): Promise<string> {
-    const { username, password } = dto;
+    const { username, password, fcm_token } = dto;
     const isUsername = await this.userModel.findOne({ username });
 
     if (isUsername) {
@@ -46,6 +50,7 @@ export class AuthService {
     const userCreated = await this.userModel.create({
       username,
       password_hash: passwordHash,
+      fcm_token,
       avatar_number: Math.floor(Math.random() * 15) + 1,
     });
     return await this.jwtService.signAsync({

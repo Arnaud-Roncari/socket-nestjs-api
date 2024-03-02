@@ -29,6 +29,12 @@ import { CreateChatDto } from './dto/create_chat.dto';
 import { WsRequestException } from 'src/common/types/ws-request-exception';
 import { WebSocketResponse } from 'src/common/types/ws-response';
 import { TypingDto } from './dto/typing.dto';
+import { NotificationService } from '../notification/notification.service';
+import { UserEntity } from './user.entity';
+import { UserService } from './user.service';
+import { UserMapper } from './mapper/user.mapper';
+import { ReadMessagesDto } from './dto/read_messages';
+import { ChatEntity } from '../chat/entity/chat.entity';
 
 @UsePipes(new ValidationPipe({ whitelist: true, disableErrorMessages: false }))
 @UseFilters(WsExceptionFilter)
@@ -41,6 +47,8 @@ export class UserGateway
   constructor(
     private readonly jwtService: JwtService,
     private readonly chatService: ChatService,
+    private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @WebSocketServer() io: Namespace;
@@ -125,6 +133,7 @@ export class UserGateway
         userId,
         dto.request_uuid,
       );
+ 
       /// Notify the sender that the chat has been created.
       this.io
         .to(client.id)
@@ -143,6 +152,24 @@ export class UserGateway
           'new-message',
           ChatMapper.toCreatedMessageDto(message, dto.chat_id),
         );
+
+      // Get sender informations (name)
+      let sender = await this.userService.getUser(userId);
+      // Get users from chat
+      let chat = await this.chatService.getOneChat(dto.chat_id);
+      for (let user of chat.users) {
+        if (user.id === userId) {
+          continue;
+        }
+        // Notify phones with firebase
+        await this.notificationService.sendNotification(
+          message.text,
+          ChatMapper.toChatDto(chat),
+          user.fcmToken,
+          UserMapper.toUserDto(sender),
+          UserMapper.toUserDto(user),
+        );
+      }
     } catch (exception) {
       if (exception instanceof WsRequestException) {
         this.io
@@ -159,6 +186,24 @@ export class UserGateway
         // Store error in database ...
       }
     }
+  }
+
+  @SubscribeMessage('read-messages')
+  async readMessages(@MessageBody() dto: ReadMessagesDto,
+  @ConnectedSocket() client: Socket,
+  ) {
+    await this.chatService.readMessages(dto);
+    /// Notify the sender that the message has been read.
+    this.io
+    .to(client.id)
+    .emit(
+      'read-messages-response',
+      new WebSocketResponse(
+        true,
+        "",
+        dto,
+      ),
+    );
   }
 
   @SubscribeMessage('typing')

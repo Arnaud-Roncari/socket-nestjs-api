@@ -24,8 +24,10 @@ export class ChatMapper {
       messages: entity.messages.map(
         (message) =>
           new MessageDto({
+            id: message.id,
             user_id: message.userId,
             text: message.text,
+            has_been_read: message.hasBeenRead,
             created_at: message.createdAt,
           }),
       ),
@@ -45,9 +47,11 @@ export class ChatMapper {
     chatId: string,
   ): CreatedMessageDto {
     return new CreatedMessageDto({
+      id: entity.id,
       chat_id: chatId,
       created_at: entity.createdAt,
       text: entity.text,
+      has_been_read: entity.hasBeenRead,
       user_id: entity.userId,
     });
   }

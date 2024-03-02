@@ -1,6 +1,8 @@
 export class MessageEntity {
+  id: string;
   userId: string;
   text: string;
+  hasBeenRead: boolean;
   createdAt: Date;
 
   constructor(parameters: MessageEntity) {
@@ -13,8 +15,10 @@ export class MessageEntity {
     }
 
     const message = new MessageEntity({
+      id: json._id.toString(),
       userId: json.user_id.toString(),
       text: json.text,
+      hasBeenRead: json.has_been_read,
       createdAt: json.created_at,
     });
 

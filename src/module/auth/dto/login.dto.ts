@@ -1,8 +1,11 @@
-import { IsString, MinLength, MaxLength, IsEmail } from 'class-validator';
+import { IsString, MinLength, MaxLength } from 'class-validator';
 
 export class LoginDto {
   @IsString()
   readonly username: string;
+
+  @IsString()
+  readonly fcm_token: string;
 
   @IsString()
   @MinLength(8)

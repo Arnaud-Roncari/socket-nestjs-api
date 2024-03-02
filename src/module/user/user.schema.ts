@@ -12,6 +12,9 @@ export class User {
   password_hash: string;
 
   @Prop()
+  fcm_token: string | null;
+
+  @Prop()
   avatar_number: number;
 }
 

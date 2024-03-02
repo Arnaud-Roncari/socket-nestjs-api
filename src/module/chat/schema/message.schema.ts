@@ -6,11 +6,15 @@ export type MessageDocument = HydratedDocument<Message>;
 
 @Schema()
 export class Message {
+
   @Prop({ type: mongoose.Types.ObjectId })
   user_id: mongoose.Types.ObjectId;
-
+ 
   @Prop({ type: String })
   text: string;
+
+  @Prop({ type: Boolean, default: false })
+  has_been_read: Boolean;
 
   /// Bug: WIll attribute the same date. The one which is when the server started.
   @Prop({ type: Date, default: new Date() })
